@@ -1,0 +1,13 @@
+api_platform:
+    title: 'Symfony API REST'
+    description: 'A symfony Api to manage Students'
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
+    collection:
+        pagination:
+            items_per_page: 4 # Default value
+
