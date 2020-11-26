@@ -10,8 +10,9 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
@@ -21,22 +22,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "security"="is_granted('ROLE_Administrateur')",
  *          "security_message"="Vous n'avez pas acces à ce ressource"
  *      },
- *      collectionOperations={
- *          "get"={"path"="/admin/profils"},
- *          "post"={"path"="/admin/profils"},
- *      },
+ *      routePrefix="/admin",
  *     itemOperations={
- *          "get"={"path"="/admin/profils/{id}"},
- *          "put"={"path"="/admin/profils/{id}"}
- *     },
- *     subresourceOperations={
- *       "get_users"={
- *         "method"="GET",
- *         "path"="/admin/profils/{id}/users"
- *       }
+ *          "get",
+ *          "put",
+ *          "delete",
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"archiver": "partial"})
+ * @UniqueEntity(
+ *      "libelle",
+ *      message="Cet profil existe"
+ * )
+ * @ApiFilter(BooleanFilter::class, properties={"archiver"})
  */
 class Profil
 {
@@ -51,6 +48,7 @@ class Profil
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
+     * @Groups({"profil:read", "user:read"})
      */
     private $libelle;
 

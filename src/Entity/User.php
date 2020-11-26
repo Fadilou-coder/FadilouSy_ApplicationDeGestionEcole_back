@@ -16,17 +16,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"formateur"="Formateur", "apprenant"="Apprenant", "user"="User"})
+ * @ORM\DiscriminatorMap({"formateur"="Formateur", "apprenant"="Apprenant", "admin"="Admin", "cm"="Cm", "user"="User"})
  * @ApiResource(
  *      normalizationContext={"groups"={"user:read"}},
  *      attributes={
  *          "security"="is_granted('ROLE_Administrateur')",
  *          "security_message"="Vous n'avez pas acces à ce ressource",
  *      },
+ *      routePrefix="/admin",
  *      collectionOperations={
- *          "get"={"path"="/admin/users"},
+ *          "get",
  *          "add_user"={
- *              "path"="/api/admin/users",
  *              "method"="POST",
  *              "access_control"="(is_granted('ROLE_Administrateur'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
@@ -35,13 +35,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          
  *      },
  *      itemOperations={
- *          "get"={"path"="/admin/users/{id}"},
- *          "put"={"path"="/admin/users/{id}"},
+ *          "get",
+ *          "put_user"={
+ *              "method"="PUT",
+ *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "route_name"="put_user",
+ *              
+ *          },
  *      }
  * 
  * )
  *  @UniqueEntity(
- *      fields={"email"},
+ *      "email",
  *      message="L'email doit être unique"
  * )
  */
@@ -58,6 +64,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="L'email est obligatoire")
+     * @Assert\Email(message="email invalid")
      */
     private $email;
 
@@ -89,15 +96,23 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="user")
-     * @Assert\NotBlank(message="L'email est obligatoire")
+     * 
+     * @Assert\NotBlank(message="Le profil est obligatoire")
      */
     private $profil;
 
 
     /**
      * @ORM\Column(type="blob", nullable=true)
+     * @Groups({"profil:read", "user:read"})
+     * @Assert\NotBlank(message="L'image est obligatoire")
      */
     private $image;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $archiver=false;
 
     public function getId(): ?int
     {
@@ -213,14 +228,26 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getImage()
+    public function getImage( )
     {
-        return $this->image;
+        return base64_encode(stream_get_contents($this->image));
     }
 
     public function setImage($image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getArchiver(): ?bool
+    {
+        return $this->archiver;
+    }
+
+    public function setArchiver(bool $archiver): self
+    {
+        $this->archiver = $archiver;
 
         return $this;
     }

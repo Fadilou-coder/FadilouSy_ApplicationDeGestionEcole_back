@@ -15,18 +15,41 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ORM\Entity(repositoryClass=CompetencesRepository::class)
  * @ApiResource(
- *      normalizationContext={"groups"={"cmpt:read"}},
- *     attributes={
- *          "security"="is_granted('ROLE_Administrateur', 'ROLE_FORMATEUR', 'ROLE_CM')",
- *          "security_message"="Vous n'avez pas acces à ce ressource"
- *      },
  *      collectionOperations={
- *          "get"={"path"="/admin/competences"},
- *          "post"={"path"="/admin/competences"},
+ *          "get"={
+ *              "path"="/admin/gprecompetences",
+ *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ *          "get_niveaux"={
+ *              "method"="GET",
+ *              "path"="/admin/competences",
+ *              "normalization_context"={"groups"={"niveaux:read"}},
+ *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ *          "post"={
+ *              "path"="/admin/competences",
+ *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "route_name"="add_niveau"
+ *          },
  *      },
  *     itemOperations={
- *          "get"={"path"="/admin/competences/{id}"},
- *          "put"={"path"="/admin/competences/{id}"}
+ *          "get"={
+ *              "path"="/admin/competences/{id}",
+ *              "normalization_context"={"groups"={"niveaux:read"}},
+ *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ * 
+ *          "put"={
+ *              "method"="put",
+ *              "path"="/admin/competences/{id}",
+ *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "route_name"="put_niveau",
+ *          }
  *     },
  * )
  * @ApiFilter(SearchFilter::class, properties={"archiver": "partial"})
@@ -37,22 +60,16 @@ class Competences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cmpt:read", "grpe:read"})
+     * @Groups({"cmpt:read", "grpe:read", "compt:read", "grpecompt:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"cmpt:read", "grpe:read"})
-     *@Assert\NotBlank(message="Le libelle est obligatoire")
+     * @Groups({"cmpt:read", "grpe:read", "compt:read", "grpecompt:read"})
+     * @Assert\NotBlank(message="Le libelle est obligatoire")
      */
     private $libelle;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"cmpt:read", "grpe:read"})
-     */
-    private $descriptif;
 
     /**
      * @ORM\ManyToMany(targetEntity=GrpeCompetences::class, mappedBy="competences")
@@ -64,9 +81,17 @@ class Competences
      */
     private $archiver=false;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Niveaux::class, mappedBy="competences",cascade={"persist"})
+     * @Groups({"niveaux:read"})
+     * @Assert\NotBlank(message="Les niveaux sont obligatoire")
+     */
+    private $niveaux;
+
     public function __construct()
     {
         $this->grpeCompetences = new ArrayCollection();
+        $this->niveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,18 +107,6 @@ class Competences
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
-
-        return $this;
-    }
-
-    public function getDescriptif(): ?string
-    {
-        return $this->descriptif;
-    }
-
-    public function setDescriptif(string $descriptif): self
-    {
-        $this->descriptif = $descriptif;
 
         return $this;
     }
@@ -133,6 +146,36 @@ class Competences
     public function setArchiver(bool $archiver): self
     {
         $this->archiver = $archiver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Niveaux[]
+     */
+    public function getNiveaux(): Collection
+    {
+        return $this->niveaux;
+    }
+
+    public function addNiveaux(Niveaux $niveaux): self
+    {
+        if (!$this->niveaux->contains($niveaux)) {
+            $this->niveaux[] = $niveaux;
+            $niveaux->setCompetences($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNiveaux(Niveaux $niveaux): self
+    {
+        if ($this->niveaux->removeElement($niveaux)) {
+            // set the owning side to null (unless already changed)
+            if ($niveaux->getCompetences() === $this) {
+                $niveaux->setCompetences(null);
+            }
+        }
 
         return $this;
     }
