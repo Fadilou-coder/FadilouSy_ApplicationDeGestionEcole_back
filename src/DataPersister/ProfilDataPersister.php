@@ -23,7 +23,10 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-      $this->menager->persist($data);
+        if (isset($context["collection_operation_name"])) {
+            $this->menager->persist($data);
+        }
+       $data->setLibelle($data->getLibelle());
       $this->menager->flush();
       return $data;
     }

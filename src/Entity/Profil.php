@@ -19,7 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ApiResource(
  *      normalizationContext={"groups"={"profil:read"}},
  *      attributes={
- *          "security"="is_granted('ROLE_Administrateur')",
+ *          "security"="is_granted('ROLE_ADMIN')",
  *          "security_message"="Vous n'avez pas acces à ce ressource"
  *      },
  *      routePrefix="/admin",
@@ -41,7 +41,7 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"profil:read", "user:read", "promo:whrite"})
      */
     private $id;
 
@@ -54,7 +54,7 @@ class Profil
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
-     * @ApiSubresource(maxDepth=1)
+     * @ApiSubresource
      */
     private $user;
 

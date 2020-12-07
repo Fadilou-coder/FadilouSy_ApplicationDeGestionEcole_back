@@ -10,15 +10,38 @@ use App\Entity\Profil;
 
 class ProfilFixtures extends Fixture
 {
-    const tab=['Administrateur', 'CM', 'Formateur', 'Apprenant'];
+    public const ADMIN_REFERENCE = 'ADMIN';
+    public const CM_REFERENCE = 'CM';
+    public const FORMATEUR_REFERENCE = 'FORMATEUR';
+    public const APPRENANT_REFERENCE = 'APPRENANT';
+
     public function load(ObjectManager $manager)
     {
-        for ($p=0;$p<4;$p++){
             $profil= new Profil();
-            $profil->setLibelle(self::tab[$p]);
-            $this->addReference(self::tab[$p],$profil);
+            $profil->setLibelle('ADMIN');
+            $this->addReference(self::ADMIN_REFERENCE,$profil);
             $manager->persist($profil);
-        }
+
+            $manager ->flush();
+
+            $profil= new Profil();
+            $profil->setLibelle('CM');
+            $this->addReference(self::CM_REFERENCE,$profil);
+            $manager->persist($profil);
+
+            $profil= new Profil();
+            $profil->setLibelle('FORMATEUR');
+            $this->addReference(self::FORMATEUR_REFERENCE,$profil);
+            $manager->persist($profil);
+
+            $profil= new Profil();
+            $profil->setLibelle('APPRENANT');
+            $this->addReference(self::APPRENANT_REFERENCE,$profil);
+            $manager->persist($profil);
+
+            $manager ->flush();
+
+            $manager ->flush();
 
             $manager ->flush();
     }

@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      normalizationContext={"groups"={"user:read"}},
  *      attributes={
- *          "security"="is_granted('ROLE_Administrateur')",
+ *          "security"="is_granted('ROLE_ADMIN')",
  *          "security_message"="Vous n'avez pas acces à ce ressource",
  *      },
  *      routePrefix="/admin",
@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "get",
  *          "add_user"={
  *              "method"="POST",
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name"="add_user",
  *          },
@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "get",
  *          "put_user"={
  *              "method"="PUT",
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name"="put_user",
  *              
@@ -57,7 +57,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"pr:read", "pr:whrite", "profil:read", "user:read", "promo:whrite", "collectApp:read", "status:read", "grp", "pr:read"})
      */
     private $id;
 
@@ -65,6 +65,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="L'email est obligatoire")
      * @Assert\Email(message="email invalid")
+     * @Groups({"pr:read", "collectApp:read", "profil:read", "user:read", "groupe:read", "apprenant:read", "promo:read", "principale:read", "promo:whrite", "status:read", "grp"})
      */
     private $email;
 
@@ -82,21 +83,21 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"pr:read", "profil:read", "user:read", "groupe:read", "apprenant:read", "promo:read", "principale:read"})
      * @Assert\NotBlank(message="Le prenom est obligatoire")
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"pr:read", "profil:read", "user:read", "groupe:read", "apprenant:read", "promo:read", "principale:read"})
      * @Assert\NotBlank(message="Le nom est obligatoire")
      */
     private $nom;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="user")
-     * 
+     * @Groups({"promo:whrite"})
      * @Assert\NotBlank(message="Le profil est obligatoire")
      */
     private $profil;
@@ -104,7 +105,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"profil:read", "user:read", "groupe:read", "apprenant:read"})
      * @Assert\NotBlank(message="L'image est obligatoire")
      */
     private $image;
@@ -113,6 +114,16 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $archiver=false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Chat::class, mappedBy="user")
+     */
+    private $chats;
+
+    public function __construct()
+    {
+        $this->chats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -230,7 +241,9 @@ class User implements UserInterface
 
     public function getImage( )
     {
-        return base64_encode(stream_get_contents($this->image));
+        if($this->image){
+            return base64_encode(stream_get_contents($this->image));
+        }
     }
 
     public function setImage($image): self
@@ -248,6 +261,36 @@ class User implements UserInterface
     public function setArchiver(bool $archiver): self
     {
         $this->archiver = $archiver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Chat[]
+     */
+    public function getChats(): Collection
+    {
+        return $this->chats;
+    }
+
+    public function addChat(Chat $chat): self
+    {
+        if (!$this->chats->contains($chat)) {
+            $this->chats[] = $chat;
+            $chat->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChat(Chat $chat): self
+    {
+        if ($this->chats->removeElement($chat)) {
+            // set the owning side to null (unless already changed)
+            if ($chat->getUser() === $this) {
+                $chat->setUser(null);
+            }
+        }
 
         return $this;
     }

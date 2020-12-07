@@ -19,26 +19,27 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *      collectionOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"ref:read"}},
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "get_grpecomp"={
  *              "method"="GET",
  *              "path"="/referentiels/grpecompetences",
  *              "normalization_context"={"groups"={"grpecompt:read"}},
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "post"={
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "denormalization_context"={"groups"={"refs:whrite"}}
  *          },
  *          
  *      },
  *      itemOperations={
  *          "get"={
  *              "normalization_context"={"groups"={"grpecomptences:read"}},
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM') or is_granted('ROLE_Apprenant'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM') or is_granted('ROLE_APPRENANT'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "put"={
@@ -46,8 +47,14 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *              "path"="api/admin/referencetiels/{id}",
  *              "access_control"="(is_granted('ROLE_Administrateur'), or is_granted('ROLE_Formateur') or is_granted('ROLE_CM') or is_granted('ROLE_Apprenant'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "route_name"="put_grpecompt",
- *          },
+ *              "denormalization_context"={"groups"={"refs:whrite"}}
+ *          }
+ *     },
+ *     subresourceOperations={
+ *          "api_promos_referentiel_competences_valides_get_subresource"={
+ *              "method"="GET",
+ *              "path"="/admnin/promos/{id}/referentiel/competences"
+ *          }
  *     }
  * )
  * @UniqueEntity(
@@ -61,43 +68,47 @@ class Referentiel
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"ref:read"})
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
-     * @Groups({"ref:read"})
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="La presentation est obligatoire")
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le programme est obligatoire")
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $programme;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Critere d'admission est obligatoire")
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"ref:read", "refs:whrite", "promo:whrite", "promo:whrite"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\ManyToMany(targetEntity=GrpeCompetences::class, inversedBy="referentiels")
-     * @Groups({"ref:read", "grpecompt:read", "grpecomptences:read"})
+     * @Groups({"ref:read", "grpecompt:read", "grpecomptences:read", "comptences:read", "refs:read", "refs:whrite"})
      * @ApiSubresource
      */
     private $grpeCompetences;
@@ -107,10 +118,22 @@ class Referentiel
      */
     private $promos;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $archiver=false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CompetencesValides::class, mappedBy="referentiel")
+     * @ApiSubresource
+     */
+    private $competencesValides;
+
     public function __construct()
     {
         $this->grpeCompetences = new ArrayCollection();
         $this->promos = new ArrayCollection();
+        $this->competencesValides = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -226,6 +249,48 @@ class Referentiel
             // set the owning side to null (unless already changed)
             if ($promo->getReferentiel() === $this) {
                 $promo->setReferentiel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getArchiver(): ?bool
+    {
+        return $this->archiver;
+    }
+
+    public function setArchiver(bool $archiver): self
+    {
+        $this->archiver = $archiver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompetencesValides[]
+     */
+    public function getCompetencesValides(): Collection
+    {
+        return $this->competencesValides;
+    }
+
+    public function addCompetencesValide(CompetencesValides $competencesValide): self
+    {
+        if (!$this->competencesValides->contains($competencesValide)) {
+            $this->competencesValides[] = $competencesValide;
+            $competencesValide->setReferentiel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetencesValide(CompetencesValides $competencesValide): self
+    {
+        if ($this->competencesValides->removeElement($competencesValide)) {
+            // set the owning side to null (unless already changed)
+            if ($competencesValide->getReferentiel() === $this) {
+                $competencesValide->setReferentiel(null);
             }
         }
 

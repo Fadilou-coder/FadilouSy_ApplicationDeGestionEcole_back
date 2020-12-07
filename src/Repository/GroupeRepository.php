@@ -22,19 +22,31 @@ class GroupeRepository extends ServiceEntityRepository
     // /**
     //  * @return Groupe[] Returns an array of Groupe objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+
+    public function findGroupe($id)
     {
         return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
+            ->innerJoin('g.apprenant', 'a')
+            ->andWhere('a.id = :value')
+            ->setParameter('value', $id)
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
-    */
+
+    public function findGroupeByApp($id, $idgr)
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.apprenant', 'a')
+            ->andWhere('a.id = :value')
+            ->setParameter('value', $id)
+            ->andWhere('g.id= :val')
+            ->setParameter('val', $idgr)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     /*
     public function findOneBySomeField($value): ?Groupe

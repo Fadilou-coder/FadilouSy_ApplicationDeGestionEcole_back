@@ -17,22 +17,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      routePrefix="/admin",
  *      normalizationContext={"groups"={"grptag:read"}},
  *      attributes={
- *          "security"="is_granted('ROLE_Administrateur') or is_granted('ROLE_FORMATEUR')",
+ *          "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR')",
  *          "security_message"="Vous n'avez pas acces à ce ressource"
  *      },
  *      collectionOperations={
- *          "get",
- *          "add_tag"={
- *              "method"="post",
+ *          "get"={"path"="/grptags"},
+ *          "post"={
  *              "path"="/grptags",
- *              "route_name"="add_tag"
+ *              "denormalization_context"={"groups"={"grptg:whrite"}}
  *          }
  *      },
  *      itemOperations={
- *          "get",
+ *          "get"={"path"="/grptags"},
  *          "put"={
- *              "method"="put",
- *              "route_name"="put_tag",
+ *              "path"="/grptags/{id}",
+ *              "denormalization_context"={"groups"={"grptg:whrite"}}
  *          }
  *      },
  * )
@@ -43,27 +42,33 @@ class GroupeTag
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"tag:read"})
+     * @Groups({"tag:read", "tag:whrite"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"tag:read"})
+     * @Groups({"tag:read", "grptg:whrite"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"tag:read", "grptg:whrite"})
      */
     private $descriptif;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="groupeTags")
-     * @Groups({"grptag:read"})
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="groupeTags", cascade="persist")
+     * @Groups({"grptag:read", "grptg:whrite"})
      * @ApiSubresource()
      */
     private $tag;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $archiver=false;
 
     public function __construct()
     {
@@ -119,6 +124,18 @@ class GroupeTag
     public function removeTag(Tag $tag): self
     {
         $this->tag->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getArchiver(): ?bool
+    {
+        return $this->archiver;
+    }
+
+    public function setArchiver(bool $archiver): self
+    {
+        $this->archiver = $archiver;
 
         return $this;
     }

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
@@ -16,41 +17,42 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ORM\Entity(repositoryClass=CompetencesRepository::class)
  * @ApiResource(
  *      collectionOperations={
- *          "get"={
- *              "path"="/admin/gprecompetences",
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
- *              "access_control_message"="Vous n'avez pas access à cette Ressource"
- *          },
+ *
  *          "get_niveaux"={
  *              "method"="GET",
  *              "path"="/admin/competences",
  *              "normalization_context"={"groups"={"niveaux:read"}},
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+     *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          },
  *          "post"={
  *              "path"="/admin/competences",
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "route_name"="add_niveau"
+ *              "denormalization_context"={"groups"={"cmpt:whrite"}}
  *          },
  *      },
  *     itemOperations={
  *          "get"={
  *              "path"="/admin/competences/{id}",
  *              "normalization_context"={"groups"={"niveaux:read"}},
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
- *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  * 
  *          "put"={
  *              "method"="put",
  *              "path"="/admin/competences/{id}",
- *              "access_control"="(is_granted('ROLE_Administrateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "route_name"="put_niveau",
+ *              "denormalization_context"={"groups"={"cmpt:whrite"}},
+ *              "normalization_context"={"groups"={"niveaux:read"}},
  *          }
  *     },
+ * )
+ * @UniqueEntity(
+ *      "libelle",
+ *      message="Cet competence existe deja"
  * )
  * @ApiFilter(SearchFilter::class, properties={"archiver": "partial"})
  */
@@ -60,14 +62,14 @@ class Competences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cmpt:read", "grpe:read", "compt:read", "grpecompt:read"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "grpcmpt:whrite"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"cmpt:read", "grpe:read", "compt:read", "grpecompt:read"})
-     * @Assert\NotBlank(message="Le libelle est obligatoire")
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "cmpt:whrite", "grpcmpt:whrite", "collectApp:read"})
+     * @Assert\NotBlank(message="Le libelle du competence est obligatoire")
      */
     private $libelle;
 
@@ -82,16 +84,28 @@ class Competences
     private $archiver=false;
 
     /**
-     * @ORM\OneToMany(targetEntity=Niveaux::class, mappedBy="competences",cascade={"persist"})
-     * @Groups({"niveaux:read"})
+     * @ORM\OneToMany(targetEntity=Niveaux::class, mappedBy="competences", cascade="persist")
+     * @Groups({"niveaux:read", "cmpt:whrite"})
      * @Assert\NotBlank(message="Les niveaux sont obligatoire")
+     * @Assert\Count(
+     *      min = 3,
+     *      max = 3,
+     *      minMessage = "Une competence doit avoir 3 niveaux",
+     *      maxMessage = "Une competence doit avoir 3 niveaux"
+     * )
      */
-    private $niveaux;
+    private $niveau;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CompetencesValides::class, mappedBy="competences")
+     */
+    private $competencesValides;
 
     public function __construct()
     {
         $this->grpeCompetences = new ArrayCollection();
-        $this->niveaux = new ArrayCollection();
+        $this->niveau = new ArrayCollection();
+        $this->competencesValides = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,30 +167,62 @@ class Competences
     /**
      * @return Collection|Niveaux[]
      */
-    public function getNiveaux(): Collection
+    public function getNiveau(): Collection
     {
-        return $this->niveaux;
+        return $this->niveau;
     }
 
-    public function addNiveaux(Niveaux $niveaux): self
+    public function addNiveau(Niveaux $niveau): self
     {
-        if (!$this->niveaux->contains($niveaux)) {
-            $this->niveaux[] = $niveaux;
-            $niveaux->setCompetences($this);
+        if (!$this->niveau->contains($niveau)) {
+            $this->niveau[] = $niveau;
+            $niveau->setCompetences($this);
         }
 
         return $this;
     }
 
-    public function removeNiveaux(Niveaux $niveaux): self
+    public function removeNiveau(Niveaux $niveau): self
     {
-        if ($this->niveaux->removeElement($niveaux)) {
+        if ($this->niveau->removeElement($niveau)) {
             // set the owning side to null (unless already changed)
-            if ($niveaux->getCompetences() === $this) {
-                $niveaux->setCompetences(null);
+            if ($niveau->getCompetences() === $this) {
+                $niveau->setCompetences(null);
             }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection|CompetencesValides[]
+     */
+    public function getCompetencesValides(): Collection
+    {
+        return $this->competencesValides;
+    }
+
+    public function addCompetencesValide(CompetencesValides $competencesValide): self
+    {
+        if (!$this->competencesValides->contains($competencesValide)) {
+            $this->competencesValides[] = $competencesValide;
+            $competencesValide->setCompetences($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetencesValide(CompetencesValides $competencesValide): self
+    {
+        if ($this->competencesValides->removeElement($competencesValide)) {
+            // set the owning side to null (unless already changed)
+            if ($competencesValide->getCompetences() === $this) {
+                $competencesValide->setCompetences(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
 }

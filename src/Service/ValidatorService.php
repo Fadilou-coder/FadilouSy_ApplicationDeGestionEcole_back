@@ -29,13 +29,11 @@ class ValidatorService
     }
 
 
-    public function Validate($utilisateur)
+    public function Validate($objet)
     {
         $errorString ='';
-        $error = $this->validator->validate($utilisateur);
+        $error = $this->validator->validate($objet);
         if(isset($error) && $error >0){ $errorString = $this->serializer->serialize($error,'json');}
         return $errorString;
     }
-
-
 }

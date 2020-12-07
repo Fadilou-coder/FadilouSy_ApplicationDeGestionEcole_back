@@ -4,16 +4,18 @@ namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Competences;
-use Container4kBcaF9\getUserControllerService;
+use App\Service\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class CompetencesDataPersister implements ContextAwareDataPersisterInterface
 {
 
     private $menager;
-    public function  __construct(EntityManagerInterface $menager)
+    private $validate;
+    public function  __construct(EntityManagerInterface $menager, ValidatorService $validate)
     {
         $this->menager = $menager;
+        $this->validate = $validate;
     }
 
     public function supports($data, array $context = []): bool
@@ -23,7 +25,12 @@ final class CompetencesDataPersister implements ContextAwareDataPersisterInterfa
 
     public function persist($data, array $context = [])
     {
-      $this->menager->persist($data);
+        if ($context["collection_operation_name"] == "post"){
+            foreach ($data->getNiveau() as $niv) {
+                $this->validate->validate($niv);
+            }
+            $this->menager->persist($data);
+        }
       $this->menager->flush();
       return $data;
     }

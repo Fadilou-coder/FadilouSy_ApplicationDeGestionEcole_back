@@ -5,8 +5,10 @@ namespace App\Controller;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\Admin;
 use App\Entity\Apprenant;
+use App\Entity\ApprenantLivrablePartiel;
 use App\Entity\Cm;
 use App\Entity\Formateur;
+use App\Entity\LivrablePartiel;
 use App\Entity\Profil;
 use App\Entity\User;
 use App\Service\UserService;
@@ -62,7 +64,7 @@ class UserController extends AbstractController
             $userObject = $serializer->denormalize($user, Apprenant::class);
         }elseif($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "FORMATEUR"){
             $userObject = $serializer->denormalize($user, Formateur::class);
-        }elseif($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "Administrateur"){
+        }elseif($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "ADMIN"){
             $userObject = $serializer->denormalize($user, Admin::class);
         }else{
             $userObject = $serializer->denormalize($user, Cm::class);
@@ -70,7 +72,6 @@ class UserController extends AbstractController
         $userObject->setImage($img);
         $userObject->setProfil($this->manager->getRepository(Profil::class)->find($user['profils']));
         $userObject ->setPassword ($this->encoder->encodePassword ($userObject, $user['password']));
-
         $validate->validate($userObject);
         $this->manager->persist($userObject);
         $this->manager->flush();
@@ -90,10 +91,14 @@ class UserController extends AbstractController
      *      "api_resource_class"=User::class
      *  }
      * )
+     * @param $id
+     * @param UserService $service
+     * @param Request $request
+     * @return JsonResponse
      */
     public function putUser($id, UserService $service,Request $request)
     {
-        $user = $service->getAttributes($request, 'image');
+        $user = $service->getAttributes($request);
         $userUpdate = $this->manager->getRepository(User::class)->find($id);
         foreach($user as $key=>$valeur){
             $setter = 'set'.ucfirst(strtolower($key));
@@ -113,5 +118,37 @@ class UserController extends AbstractController
         $this->manager->flush();
         return $this->json("success",Response::HTTP_OK);
 
+    }
+
+    /**
+     * @Route(
+     *  name="put_status",
+     *  path="api/apprenants/{id}/livrablepartiels/{iD}",
+     *  methods={"PUT"},
+     *  defaults={
+     *      "_controller"="\app\Controller\User::putStatus",
+     *      "_api_item_operation_name"="put"
+     *  }
+     * )
+     * @param $id
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $menager
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function putStatus($id, $iD, SerializerInterface $serializer, EntityManagerInterface $menager, Request $request)
+    {
+        $lP = $menager->getRepository(LivrablePartiel::class)->find($iD);
+        $apprenant = $menager->getRepository(Apprenant::class)->find($id);
+        $postman = $serializer->decode($request->getContent(), 'json');
+        if (!$apprenant || !$lP) {
+            throw $this->createNotFoundException(
+                'l\'apprenant ou le groupe n\'existe pas'
+            );
+        }
+        $appLp = $menager->getRepository(ApprenantLivrablePartiel::class)->findOneBy(["apprenant"=>$id, "livrablePartiel"=>$iD]);
+        $appLp->setEtat($postman["etat"]);
+        $menager->flush();
+        return $this->json("success",Response::HTTP_OK);
     }
 }

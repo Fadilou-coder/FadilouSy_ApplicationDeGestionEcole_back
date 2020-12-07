@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Cm;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -21,7 +22,7 @@ class CmFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create();
         for ($i=1; $i <=4 ; $i++) {
-            $user = new User();
+            $user = new Cm();
             $user ->setProfil ($this->getReference(ProfilFixtures::CM_REFERENCE))
                   ->setPrenom($faker->firstName())
                   ->setNom($faker->lastName)

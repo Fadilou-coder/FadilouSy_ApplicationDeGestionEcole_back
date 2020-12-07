@@ -22,19 +22,19 @@ class PromoRepository extends ServiceEntityRepository
     // /**
     //  * @return Promo[] Returns an array of Promo objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findGroupe($id, $Id)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->innerJoin('p.groupe', 'g')
+            ->andWhere('p.id = :val')
+            ->setParameter('val', $id)
+            ->andWhere('g.id = :value')
+            ->setParameter('value', $Id)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Promo

@@ -2,25 +2,55 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="346b5c1b-8ec9-460c-b7de-fa26f3651970" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/reprise_symfony.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/reprise_symfony.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/lexik_jwt_authentication.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118130937.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118140805.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118144210.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118160017.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118222045.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118231030.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201118233800.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20201119101548.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/api_platform.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/api_platform.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20201124122658.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20201124150944.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20201125084112.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20201125084635.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20201126100640.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ApprenantController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ApprenantController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CompetencesController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/GroupeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/GroupeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/GroupeTagController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/GrpeCompetencesController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReferentielController.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/CompetenceFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/CompetenceFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AdminFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AdminFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/CmFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/CmFixtures.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DataFixtures/ProfilFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/ProfilFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataPersister/CompetencesDataPersister.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataPersister/CompetencesDataPersister.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataPersister/ProfilDataPersister.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataPersister/ProfilDataPersister.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Admin.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Apprenant.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Apprenant.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Cm.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Cm.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Competences.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Competences.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Formateur.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Formateur.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Groupe.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Groupe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/GroupeTag.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/GroupeTag.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/GrpeCompetences.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/GrpeCompetences.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Niveaux.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Niveaux.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Profil.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Profil.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Promo.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Promo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Referentiel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Referentiel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Tag.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Tag.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/GroupeRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/GroupeRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PromoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PromoRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/ReferentielRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ReferentielRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/CompetenceService.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/TagService.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/UserService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/UserService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/ValidatorService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ValidatorService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/groupe_tag/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/groupe_tag/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/grpe_competences/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/grpe_competences/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,19 +184,24 @@
       <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
       <path value="$PROJECT_DIR$/vendor/lexik/jwt-authentication-bundle" />
       <path value="$PROJECT_DIR$/vendor/namshi/jose" />
+      <path value="$PROJECT_DIR$/vendor/symfony/swiftmailer-bundle" />
+      <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
     </include_path>
   </component>
   <component name="ProjectId" id="1kU5HeHTgeahr9nMi8Fh0dguths" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../lost+found" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/DataPersister" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -174,8 +209,27 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/DataPersister" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JavaScript Debug.LivrablePartielController.php">
+    <configuration name="LivrablePartielController.php" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/reprise_symfony/Controller/LivrablePartielController.php" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="PromoFixtures" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner directory="$PROJECT_DIR$/src/DataFixtures" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.LivrablePartielController.php" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -192,33 +246,20 @@
       <workItem from="1606140820395" duration="12000" />
       <workItem from="1606144485237" duration="445000" />
       <workItem from="1606299608340" duration="3000" />
-      <workItem from="1606384736988" duration="1464000" />
+      <workItem from="1606384736988" duration="8246000" />
+      <workItem from="1606402375210" duration="23605000" />
+      <workItem from="1606688612034" duration="4781000" />
+      <workItem from="1606722153320" duration="82189000" />
+      <workItem from="1606981584889" duration="27626000" />
+      <workItem from="1607068132456" duration="43232000" />
+      <workItem from="1607300739678" duration="1310000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605704557145">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1605704557145" />
-    <state x="785" y="234" width="411" height="645" key="#com.intellij.ide.util.MemberChooser" timestamp="1606384944381">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="785" y="234" width="411" height="645" key="#com.intellij.ide.util.MemberChooser/72.27.1848.1053@72.27.1848.1053" timestamp="1606384944381" />
-    <state x="72" y="27" width="750" height="1053" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1606384883699">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="72" y="27" width="750" height="1053" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1606384883699" />
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1605704753849">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="779" y="311" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1605704753849" />
-    <state x="485" y="188" width="1022" height="737" key="SettingsEditor" timestamp="1606385306518">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="485" y="188" width="1022" height="737" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1606385306518" />
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

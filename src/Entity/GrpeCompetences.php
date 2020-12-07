@@ -10,44 +10,53 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=GrpeCompetencesRepository::class)
  * @ApiResource(
+ *     normalizationContext={"groups"={"compt:read"}},
  *     collectionOperations={
- *     "get_competences"={
- *          "method"="GET",
- *          "path"="/admin/grpecompetences/competences",
- *          "normalization_context"={"groups"={"compt:read"}},
- *          "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
- *          "access_control_message"="Vous n'avez pas access à cette Ressource",
- *     },
- *     "post_groupe_competences"={
- *          "method"="POST",
- *          "path"="/api/admin/grpecompetences",
- *          "access_control"="(is_granted('ROLE_Administrateur'))",
- *          "access_control_message"="Vous n'avez pas access à cette Ressource",
- *          "route_name"="add_grpecompetences"
- *      },
+ *          "get"={
+ *              "path"="/admin/gprecompetences",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ *          "get_competences"={
+ *              "method"="GET",
+ *              "path"="/admin/grpecompetences/competences",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *          },
+ *          "post"={
+ *              "path"="/admin/grpecompetences",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "denormalization_context"={"groups"={"grpcmpt:whrite"}},
+ *          },
  * },
  *      itemOperations={
  *          "get"={
  *                  "path"="/admin/grpecompetences/{id}",
- *                  "security"="is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM')"
+ *                  "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')"
  *          },
  *          
  *          "put"={
  *              "method"="put",
  *              "path"="/admin/grpecompetences/{id}",
- *              "security"="is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM')",
- *              "route_name"="put_compt",
+ *              "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')",
+ *              "denormalization_context"={"groups"={"grpcmpt:whrite"}},
  *          },
  *      
- *          "delete"={"path"="/admin/grpecompetences/{id}","security"="is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM')"},
+ *          "delete"={"path"="/admin/grpecompetences/{id}","security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')"},
  *     },
  *
+ * )
+ * @UniqueEntity(
+ *      "libelle",
+ *      message="Cet groupe de competences existe deja"
  * )
  * @ApiFilter(SearchFilter::class, properties={"archiver": "partial"})
  */
@@ -57,7 +66,7 @@ class GrpeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read"})
+     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "refs:whrite"})
      * 
      */
     private $id;
@@ -65,20 +74,20 @@ class GrpeCompetences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
-     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "grpcmpt:whrite"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"cmpt:read", "grpe:read"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "grpcmpt:whrite"})
      */
     private $descriptif;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Competences::class, inversedBy="grpeCompetences")
+     * @ORM\ManyToMany(targetEntity=Competences::class, inversedBy="grpeCompetences", cascade="persist")
      * @Assert\NotBlank (message="un grpe de compétences a au moins une sous compétence")
-     * @Groups({"compt:read", "grpecompt:read"})
+     * @Groups({"refs:whrite", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "grpcmpt:whrite"})
      * @ApiSubresource
      */
     

@@ -19,22 +19,19 @@ class ReferentielRepository extends ServiceEntityRepository
         parent::__construct($registry, Referentiel::class);
     }
 
-    // /**
-    //  * @return Referentiel[] Returns an array of Referentiel objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function findRefByCompetenceById($id_ref, $id_grpcompt)
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+            ->innerJoin('r.grpeCompetences', 'c')
+            ->andWhere('c.id = :val')
+            ->setParameter('val', $id_grpcompt)
+            ->andWhere('r.id = :ref')
+            ->setParameter('ref', $id_ref)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Referentiel
