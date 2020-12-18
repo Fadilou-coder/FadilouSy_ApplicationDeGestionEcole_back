@@ -43,6 +43,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "route_name"="put_user",
  *              
  *          },
+ *          "delete"={
+ *              "route_name"="delUser",
+ *          },
  *      }
  * 
  * )
@@ -78,6 +81,7 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="Le mot de passe est obligatoire")
+     * @Groups({"promo:whrite", "user:read"})
      */
     private $password;
 
@@ -97,7 +101,7 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="user")
-     * @Groups({"promo:whrite"})
+     * @Groups({"promo:whrite", "user:read"})
      * @Assert\NotBlank(message="Le profil est obligatoire")
      */
     private $profil;

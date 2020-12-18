@@ -25,8 +25,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      routePrefix="/admin",
  *     itemOperations={
  *          "get",
- *          "put",
- *          "delete",
+ *          "put"={
+ *              "route_name"="putProfil",
+ *          },
+ *          "delete"={
+ *              "route_name"="delProfil",
+ *          },
  *     }
  * )
  * @UniqueEntity(
@@ -41,7 +45,7 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"profil:read", "user:read", "promo:whrite"})
+     * @Groups({"user:read", "promo:whrite", "profil:read"})
      */
     private $id;
 

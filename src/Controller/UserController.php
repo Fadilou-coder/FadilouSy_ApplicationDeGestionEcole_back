@@ -56,21 +56,22 @@ class UserController extends AbstractController
     public function addUser(SerializerInterface $serializer,Request $request, ValidatorService $validate)
     {
         $user = $request->request->all();
+        return $this->json($user['nom']);
         $img = $request->files->get("image");
         if($img){
             $img = fopen($img->getRealPath(), "rb");
         }
-        if($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "APPRENANT"){
+        if($user['profils'] === "APPRENANT"){
             $userObject = $serializer->denormalize($user, Apprenant::class);
-        }elseif($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "FORMATEUR"){
+        }elseif( $user['profils'] === "FORMATEUR"){
             $userObject = $serializer->denormalize($user, Formateur::class);
-        }elseif($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "ADMIN"){
+        }elseif($user['profils'] === "ADMIN"){
             $userObject = $serializer->denormalize($user, Admin::class);
         }else{
             $userObject = $serializer->denormalize($user, Cm::class);
         }
         $userObject->setImage($img);
-        $userObject->setProfil($this->manager->getRepository(Profil::class)->find($user['profils']));
+        $userObject->setProfil($this->manager->getRepository(Profil::class)->findOneBy(['libelle' => $user['profils']]));
         $userObject ->setPassword ($this->encoder->encodePassword ($userObject, $user['password']));
         $validate->validate($userObject);
         $this->manager->persist($userObject);
@@ -150,5 +151,77 @@ class UserController extends AbstractController
         $appLp->setEtat($postman["etat"]);
         $menager->flush();
         return $this->json("success",Response::HTTP_OK);
+    }
+
+    /**
+     * @Route(
+     *  name="delProfil",
+     *  path="api/admin/profils/{id}",
+     *  methods={"DELETE"},
+     *  defaults={
+     *      "_controller"="\app\Controller\User::delProfil",
+     *      "_api_item_operation_name"="delete"
+     *  }
+     * )
+     * @param $id
+     * @param EntityManagerInterface $menager
+     * @return JsonResponse
+     */
+    public function delProfil($id, EntityManagerInterface $menager)
+    {
+        $profil = $menager->getRepository(Profil::class)->find($id);
+        $profil->setArchiver(true);
+        foreach($profil->getUser() as $user){
+            $user->SetArchiver(true);
+        }
+        $menager->flush();
+        return $this->json("success",Response::HTTP_OK);
+    }
+
+    /**
+     * @Route(
+     *  name="delUser",
+     *  path="api/admin/users/{id}",
+     *  methods={"DELETE"},
+     *  defaults={
+     *      "_controller"="\app\Controller\User::delUser",
+     *      "_api_item_operation_name"="delete"
+     *  }
+     * )
+     * @param $id
+     * @param EntityManagerInterface $menager
+     * @return JsonResponse
+     */
+    public function delUser($id, EntityManagerInterface $menager)
+    {
+        $user = $menager->getRepository(User::class)->find($id);
+        $user->setArchiver(true);
+        $menager->flush();
+        return $this->json("success",Response::HTTP_OK);
+    }
+
+    /**
+     * @Route(
+     *  name="putProfil",
+     *  path="api/admin/profils/{id}",
+     *  methods={"PUT"},
+     *  defaults={
+     *      "_controller"="\app\Controller\User::putProfil",
+     *      "_api_item_operation_name"="put"
+     *  }
+     * )
+     * @param $id
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $menager
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function putProfil($id, EntityManagerInterface $menager, SerializerInterface $serializer, Request $request)
+    {
+        $profil = $menager->getRepository(Profil::class)->find($id);
+        $postman = $serializer->decode($request->getContent(), 'json');
+        $profil->setLibelle($postman["libelle"]);
+        $menager->flush();
+        return $this->json($profil,Response::HTTP_OK);
     }
 }
