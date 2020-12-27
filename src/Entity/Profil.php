@@ -45,14 +45,14 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:read", "promo:whrite", "profil:read"})
+     * @Groups({"user:read", "promo:whrite", "profil:read", "apprenant:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
-     * @Groups({"profil:read", "user:read"})
+     * @Groups({"profil:read", "user:read", "apprenant:read"})
      */
     private $libelle;
 

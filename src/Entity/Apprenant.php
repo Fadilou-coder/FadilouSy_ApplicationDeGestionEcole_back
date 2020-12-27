@@ -22,24 +22,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *      collectionOperations={
  *          "get"={
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          }, 
  *          "post_apprenant"={
  *              "method"="post",
  *              "path"="/apprenant",
- *              "access_control"="(is_granted(is_granted('ROLE_Administrateur') or 'ROLE_Formateur'))",
+ *              "access_control"="(is_granted(is_granted('ROLE_ADMIN') or 'ROLE_FORMATEUR'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name"="add_app",
  *          }     
  *      },
  *     itemOperations={
  *          "get"={
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          },
  *          "put"={
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          },
  *          "put_liv"={

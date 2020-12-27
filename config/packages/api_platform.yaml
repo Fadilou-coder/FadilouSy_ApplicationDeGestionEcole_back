@@ -9,4 +9,4 @@ api_platform:
         versions: [3]
     collection:
         pagination:
-            items_per_page: 12 # Default value
+            items_per_page: 10 # Default value

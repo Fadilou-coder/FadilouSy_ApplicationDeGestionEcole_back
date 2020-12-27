@@ -58,16 +58,10 @@ class ApprenantController extends AbstractController
         if($img){
             $img = fopen($img->getRealPath(), "rb");
         }
-        if($this->manager->getRepository(Profil::class)->find($user['profils'])->getLibelle() === "APPRENANT"){
-            $userObject = $serializer->denormalize($user, Apprenant::class);
-        }
-        else{
-            return $this->json("le profil doit etre celui d'un apprenant",Response::HTTP_OK);
-        }
+        $userObject = $serializer->denormalize($user, Apprenant::class);
         $userObject->setImage($img);
-        $userObject->setProfil($this->manager->getRepository(Profil::class)->find($user['profils']));
+        $userObject->setProfil($this->manager->getRepository(Profil::class)->findOneBy(['libelle' => "APPRENANT"]));
         $userObject ->setPassword ($this->encoder->encodePassword ($userObject, $user['password']));
-
         $validate->validate($userObject);
         $this->manager->persist($userObject);
         $this->manager->flush();

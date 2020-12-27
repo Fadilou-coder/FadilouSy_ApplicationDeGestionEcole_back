@@ -34,6 +34,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "put"={
  *              "method"="PUT",
  *              "path"="/admin/profilsortie/{id}",
+ *          },
+ *          "delete_ps"={
+ *              "method"="DELETE",
+ *              "path"="/admin/profilsortie/{id}",
+ *              "route_name"="delete_ps"
  *          }
  *     }
  *  )

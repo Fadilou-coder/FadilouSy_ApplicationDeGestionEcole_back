@@ -56,7 +56,6 @@ class UserController extends AbstractController
     public function addUser(SerializerInterface $serializer,Request $request, ValidatorService $validate)
     {
         $user = $request->request->all();
-        return $this->json($user['nom']);
         $img = $request->files->get("image");
         if($img){
             $img = fopen($img->getRealPath(), "rb");
@@ -76,9 +75,7 @@ class UserController extends AbstractController
         $validate->validate($userObject);
         $this->manager->persist($userObject);
         $this->manager->flush();
-        fclose($img);
-        return $this->json("success",Response::HTTP_OK);
-
+        return $this->json($userObject,Response::HTTP_OK);
     }
 
     /**
@@ -105,7 +102,7 @@ class UserController extends AbstractController
             $setter = 'set'.ucfirst(strtolower($key));
             if(method_exists(User::class, $setter)){
                 if($key === "profil"){
-                    $userUpdate->$setter($this->manager->getRepository(Profil::class)->find($valeur));
+                    $userUpdate->$setter($this->manager->getRepository(Profil::class)->findOneBy(['libelle' => $valeur]));
                 }
                 elseif($key === "password"){
                     $userUpdate->$setter($this->encoder->encodePassword ($userUpdate, $valeur));

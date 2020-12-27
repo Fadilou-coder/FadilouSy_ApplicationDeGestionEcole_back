@@ -60,7 +60,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"pr:read", "pr:whrite", "profil:read", "user:read", "promo:whrite", "collectApp:read", "status:read", "grp", "pr:read"})
+     * @Groups({"pr:read", "pr:whrite", "profil:read", "user:read", "promo:whrite", "collectApp:read", "status:read", "grp", "pr:read", "apprenant:read"})
      */
     private $id;
 
@@ -101,7 +101,7 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="user")
-     * @Groups({"promo:whrite", "user:read"})
+     * @Groups({"promo:whrite", "user:read", "apprenant:read"})
      * @Assert\NotBlank(message="Le profil est obligatoire")
      */
     private $profil;
@@ -110,7 +110,6 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="blob", nullable=true)
      * @Groups({"profil:read", "user:read", "groupe:read", "apprenant:read"})
-     * @Assert\NotBlank(message="L'image est obligatoire")
      */
     private $image;
 
