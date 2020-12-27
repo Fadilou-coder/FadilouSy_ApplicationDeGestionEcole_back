@@ -25,13 +25,12 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        $this->decorated->persist($data);
+      $this->decorated->persist($data);
       return $data;
     }
 
     public function remove($data, array $context = [])
     {
-        dd($data);
       $data->setArchiver(true);
       foreach($data->getUser() as $user){
         $user->SetArchiver(true);

@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\ProfilsDeSortie;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProfilsDeSortieController extends AbstractController
 {
@@ -30,6 +32,22 @@ class ProfilsDeSortieController extends AbstractController
     public function delete($id, EntityManagerInterface $menager){
         $ps = $menager->getRepository(ProfilsDeSortie::class)->find($id);
         $ps->setArchiver(true);
+        $menager->flush();
+        return $this->json($ps,Response::HTTP_OK);
+    }
+
+    /**
+     * @Route(
+     *  name="putProfilSortie",
+     *  path="api/admin/profilsortie/{id}",
+     *  methods={"PUT"}
+     * )
+     */
+    public function putProfil($id, EntityManagerInterface $menager, SerializerInterface $serializer, Request $request)
+    {
+        $ps = $menager->getRepository(ProfilsDeSortie::class)->find($id);
+        $postman = $serializer->decode($request->getContent(), 'json');
+        $ps->setLibelle($postman["libelle"]);
         $menager->flush();
         return $this->json($ps,Response::HTTP_OK);
     }

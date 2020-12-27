@@ -19,10 +19,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get"={
  *              "path"="/admin/profilsorties",
  *          },
- *          "get_app_by_promo"={
- *              "method"="GET",
- *              "path"="/admin/promo/{id}/profilsorties",
- *          },
  *          "post"={
  *              "path"="/admin/profilsorties",
  *          },
@@ -34,6 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "put"={
  *              "method"="PUT",
  *              "path"="/admin/profilsortie/{id}",
+ *              "route_name" = "putProfilSortie"
  *          },
  *          "delete_ps"={
  *              "method"="DELETE",
