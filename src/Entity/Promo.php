@@ -142,7 +142,7 @@ class Promo
     private $dateFinProvisoire;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      * @Groups({"promo:whrite"})
      */
     private $dataFinReelle;
@@ -151,7 +151,7 @@ class Promo
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo:whrite"})
      */
-    private $etat;
+    private $etat = "creer";
 
     /**
      * @ORM\Column(type="string", length=255)

@@ -32,22 +32,27 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *          "post"={
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "denormalization_context"={"groups"={"refs:whrite"}}
+ *              "route_name" = "addRef",
  *          },
  *          
  *      },
  *      itemOperations={
  *          "get"={
- *              "normalization_context"={"groups"={"grpecomptences:read"}},
+ *              "normalization_context"={"groups"={"ref:read"}},
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM') or is_granted('ROLE_APPRENANT'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "put"={
  *              "method"="put",
- *              "path"="api/admin/referencetiels/{id}",
+ *              "path"="api/admin/referentiels/{id}",
  *              "access_control"="(is_granted('ROLE_Administrateur'), or is_granted('ROLE_Formateur') or is_granted('ROLE_CM') or is_granted('ROLE_Apprenant'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "denormalization_context"={"groups"={"refs:whrite"}}
+ *              "route_name"="put_ref"
+ *          },
+ *          "delete"={
+ *              "method"="delete",
+ *              "path"="api/admin/referentiels/{id}",
+ *              "route_name"="delRef",
  *          }
  *     },
  *     subresourceOperations={
@@ -87,24 +92,11 @@ class Referentiel
     private $presentation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="blob")
      * @Assert\NotBlank(message="Le programme est obligatoire")
      * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
     private $programme;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Critere d'admission est obligatoire")
-     * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
-     */
-    private $critereAdmission;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"ref:read", "refs:whrite", "promo:whrite", "promo:whrite"})
-     */
-    private $critereEvaluation;
 
     /**
      * @ORM\ManyToMany(targetEntity=GrpeCompetences::class, inversedBy="referentiels")
@@ -128,6 +120,18 @@ class Referentiel
      * @ApiSubresource
      */
     private $competencesValides;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"ref:read"})
+     */
+    private $critereEvaluation;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"ref:read"})
+     */
+    private $critereAdmission;
 
     public function __construct()
     {
@@ -165,41 +169,22 @@ class Referentiel
         return $this;
     }
 
-    public function getProgramme(): ?string
+    public function getProgramme()
     {
-        return $this->programme;
+        if ($this->programme) {
+            return base64_encode(stream_get_contents($this->programme));
+        }
+       
     }
 
-    public function setProgramme(string $programme): self
+    public function setProgramme($programme): self
     {
         $this->programme = $programme;
 
         return $this;
     }
 
-    public function getCritereAdmission(): ?string
-    {
-        return $this->critereAdmission;
-    }
-
-    public function setCritereAdmission(string $critereAdmission): self
-    {
-        $this->critereAdmission = $critereAdmission;
-
-        return $this;
-    }
-
-    public function getCritereEvaluation(): ?string
-    {
-        return $this->critereEvaluation;
-    }
-
-    public function setCritereEvaluation(string $critereEvaluation): self
-    {
-        $this->critereEvaluation = $critereEvaluation;
-
-        return $this;
-    }
+    
 
     /**
      * @return Collection|GrpeCompetences[]
@@ -293,6 +278,30 @@ class Referentiel
                 $competencesValide->setReferentiel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCritereEvaluation(): ?string
+    {
+        return $this->critereEvaluation;
+    }
+
+    public function setCritereEvaluation(string $critereEvaluation): self
+    {
+        $this->critereEvaluation = $critereEvaluation;
+
+        return $this;
+    }
+
+    public function getCritereAdmission(): ?string
+    {
+        return $this->critereAdmission;
+    }
+
+    public function setCritereAdmission(string $critereAdmission): self
+    {
+        $this->critereAdmission = $critereAdmission;
 
         return $this;
     }

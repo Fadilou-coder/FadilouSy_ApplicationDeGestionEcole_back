@@ -51,4 +51,21 @@ class ProfilsDeSortieController extends AbstractController
         $menager->flush();
         return $this->json($ps,Response::HTTP_OK);
     }
+
+    /**
+     * @Route(
+     *  name="postProfilSortie",
+     *  path="api/admin/profilsorties",
+     *  methods={"POST"}
+     * )
+     */
+    public function postProfil(EntityManagerInterface $menager, SerializerInterface $serializer, Request $request)
+    {
+        $ps = new ProfilsDeSortie();
+        $postman = $serializer->decode($request->getContent(), 'json');
+        $ps->setLibelle($postman["libelle"]);
+        $menager->persist($ps);
+        $menager->flush();
+        return $this->json($ps,Response::HTTP_OK);
+    }
 }

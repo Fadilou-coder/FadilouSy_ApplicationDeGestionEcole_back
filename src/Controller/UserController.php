@@ -174,6 +174,7 @@ class UserController extends AbstractController
         $menager->flush();
         return $this->json("success",Response::HTTP_OK);
     }
+    
 
     /**
      * @Route(

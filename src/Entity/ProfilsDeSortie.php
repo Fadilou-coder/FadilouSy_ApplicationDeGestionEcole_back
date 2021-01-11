@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          },
  *          "post"={
  *              "path"="/admin/profilsorties",
+ *              "route-name" = "postProfilSortie"
  *          },
  *     },
  *     itemOperations={

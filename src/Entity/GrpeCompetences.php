@@ -35,11 +35,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "denormalization_context"={"groups"={"grpcmpt:whrite"}},
+ *              "route_name"="addGrpCompt"
  *          },
  * },
  *      itemOperations={
  *          "get"={
- *                  "path"="/admin/grpecompetences/{id}",
+ *                  "path"="/admin/gprecompetences/{id}",
  *                  "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')"
  *          },
  *          
@@ -48,9 +49,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "path"="/admin/grpecompetences/{id}",
  *              "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')",
  *              "denormalization_context"={"groups"={"grpcmpt:whrite"}},
+ *              "route_name"="editGrpCompt",
  *          },
  *      
- *          "delete"={"path"="/admin/grpecompetences/{id}","security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')"},
+ *          "delete"={
+ *              "method"="delete",
+ *              "path"="/admin/grpecompetences/{id}",
+ *              "security"="is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM')",
+ *              "route_name" = "delGrpCompt",
+ *          },
  *     },
  *
  * )
@@ -66,7 +73,7 @@ class GrpeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "refs:whrite"})
+     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "refs:whrite", "compt:read", "cmpt:whrite"})
      * 
      */
     private $id;
@@ -74,13 +81,13 @@ class GrpeCompetences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "grpcmpt:whrite"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "grpcmpt:whrite", "compt:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "grpcmpt:whrite"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "grpcmpt:whrite", "compt:read"})
      */
     private $descriptif;
 

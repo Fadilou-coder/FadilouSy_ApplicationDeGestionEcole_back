@@ -29,7 +29,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "path"="/admin/competences",
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "denormalization_context"={"groups"={"cmpt:whrite"}}
+ *              "denormalization_context"={"groups"={"cmpt:whrite"}},
+ *              "route_name" = "addCompt"
+ *              
  *          },
  *      },
  *     itemOperations={
@@ -62,19 +64,20 @@ class Competences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "grpcmpt:whrite"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "grpcmpt:whrite", "niveaux:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "cmpt:whrite", "grpcmpt:whrite", "collectApp:read"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "compt:read", "grpecompt:read", "comptences:read", "refs:read", "cmpt:whrite", "grpcmpt:whrite", "collectApp:read", "niveaux:read"})
      * @Assert\NotBlank(message="Le libelle du competence est obligatoire")
      */
     private $libelle;
 
     /**
-     * @ORM\ManyToMany(targetEntity=GrpeCompetences::class, mappedBy="competences")
+     * @ORM\ManyToMany(targetEntity=GrpeCompetences::class, mappedBy="competences", cascade="persist")
+     * @Groups ({"cmpt:whrite", "niveaux:read"})
      */
     private $grpeCompetences;
 
