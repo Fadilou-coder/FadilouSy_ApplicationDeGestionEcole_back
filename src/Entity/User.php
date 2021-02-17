@@ -121,6 +121,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"profil:read", "user:read", "groupe:read", "apprenant:read"})
      */
     private $archiver=false;
 
