@@ -1,18 +1,31 @@
 ﻿		Documentation Sur ApplicationDeGestionEcole_back
 
 1. Télécharger le d’abord Le projet avec 
-       git clone https://github.com/Fadilou-coder/FadilouSy_ApplicationDeGestionEcole_front.git
-	(Télécharger au préalable le projet back)
+       git clone https://github.com/Fadilou-coder/FadilouSy_ApplicationDeGestionEcole_back.git
 
-2.Taper les Commandes Suivants :
+3. Creer un fichier .env.local et tu met le bout de code suivant
+
+###> symfony/swiftmailer-bundle ###
+# For Gmail as a transport, use: "gmail://username:password@localhost"
+# For a generic SMTP server, use: "smtp://localhost:25?encryption=&auth_mode="
+# Delivery is disabled by default via "null://localhost"
+MAILER_URL=gmail://email:m_d_p@localhost
+###< symfony/swiftmailer-bundle ###
+
+A la place de email, vous mettez votre email et à la place de m_d_p vous mettez le mot de passe de votre email.
+
+3.Taper les Commandes Suivants :
 - Composer install Pour télécharger les dépendances (installer au préalable Composer)
 - symfony serve (pour tester, Installer au préalable le CLI Symfony)
 
-3. Aller sur le navigateur et Voir toutes les routes (naviguer sur http://localhost:8000/api)
+4.Importer la base de donnée ou créer la base de donnée avec la commande: symfony console d:d:c
 
-4 . Vous pouver tester les routes sur postman ou Télécharger le projet Front sur mon githup avec 
+4. Aller sur le navigateur et Voir toutes les routes (naviguer sur http://localhost:8000/api)
+
+5. Vous pouver tester les routes sur postman ou Télécharger le projet Front sur mon githup avec 
       git clone https://github.com/Fadilou-coder/FadilouSy_ApplicationDeGestionEcole_front.git
 		(Lire la documentation)
+
 -Les Identifiants de quelques Utilisateurs:
     Apprenant : 
      email : may18@medhurst.com
