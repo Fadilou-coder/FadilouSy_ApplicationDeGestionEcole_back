@@ -1,0 +1,31 @@
+﻿		Documentation Sur ApplicationDeGestionEcole_back
+
+1. Télécharger le d’abord Le projet avec 
+       git clone https://github.com/Fadilou-coder/FadilouSy_ApplicationDeGestionEcole_front.git
+	(Télécharger au préalable le projet back)
+
+2.Taper les Commandes Suivants :
+- Composer install Pour télécharger les dépendances (installer au préalable Composer)
+- symfony serve (pour tester, Installer au préalable le CLI Symfony)
+
+3. Aller sur le navigateur et Voir toutes les routes (naviguer sur http://localhost:8000/api)
+
+4 . Vous pouver tester les routes sur postman ou Télécharger le projet Front sur mon githup avec 
+      git clone https://github.com/Fadilou-coder/FadilouSy_ApplicationDeGestionEcole_front.git
+		(Lire la documentation)
+-Les Identifiants de quelques Utilisateurs:
+    Apprenant : 
+     email : may18@medhurst.com
+     password : password
+
+    CM :
+     email : nick.altenwerth@marvin.com
+     password : password
+
+   Admin:
+     email : yhane@bartell.org
+     password : password
+ 
+  Formateur:
+     email : loy55@kautzer.biz
+     password : password
