@@ -3,16 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Apprenant;
-use App\Entity\Formateur;
-use App\Entity\Groupe;
+use App\Entity\Profil;
 use App\Entity\Promo;
 use App\Entity\Referentiel;
-use App\Entity\User;
-use App\Repository\PromoRepository;
 use App\Service\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
-use foo\Foo;
-use PhpParser\Node\Stmt\Foreach_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +36,98 @@ class PromoController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route(
+     *  name="add_promo",
+     *  path="/api/admin/promos",
+     *  methods={"POST"},
+     * )
+     */
+    public function addPromo(\Swift_Mailer $swift_Mailer, SerializerInterface $serializer,Request $request, ValidatorService $validate, EntityManagerInterface $menager)
+    {
+        $myMail="syfadilou3@gmail.com";
+        $to = [];
+        $promo = $request->request->all();
+        $img = $request->files->get("image");
+        if ($request->files->get("fichier")) {
+            $fichier = $request->files->get("fichier")->getRealPath();
+        }
+        //dd($fichier);
+        if($img){
+            $img = fopen($img->getRealPath(), "rb");
+        }
+        $promoObject = $serializer->denormalize($promo, Promo::class);
+        $promoObject->setImage($img);
+        $refs = explode(",", $promo['refs']);
+        foreach($refs as $r){
+            if ($r !== "") {
+                $promoObject->addReferentiel($menager->getRepository(Referentiel::class)->findOneBy(['libelle' => $r]));
+            }
+        }
+        
+        $apps = explode(",", $promo['apps']);
+        foreach($apps as $app){
+            if ($app !== "") {
+                if ($menager->getRepository(Apprenant::class)->findOneBy(['email' => $app])) {
+                    $promoObject->addApprenant($menager->getRepository(Apprenant::class)->findOneBy(['email' => $app]));
+                }else {
+                    $nouvApp = new Apprenant($app);
+                    $nouvApp->setProfil($menager->getRepository(Profil::class)->findOneBy(['libelle' => 'APPRENANT']));
+                    $promoObject->addApprenant($nouvApp);
+                }
+                $to[] = $app;
+            }
+        }
+
+        if (isset($fichier)) {
+            $inputFileType = \PHPExcel_IOFactory::identify($fichier);
+            /*  Create a new Reader of the type defined in $inputFileType  */
+            $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($fichier);
+            $cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
+            //extract to a PHP readable array format
+            foreach ($cell_collection as $cell) {
+                $row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
+                $data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
+                //header will/should be in row 1 only. of course this can be modified to suit your need.
+                if ($row == 1) {
+                    $header[] = $data_value;
+                } else {
+                    $values[$row][] = $data_value;
+                }
+            }
+            //dd($values[2]);
+            //send the data in an array format
+            foreach($values as $val){
+                    for ($i=0; $i < count($val) ; $i++) { 
+                        $data[$header[$i]][] = $val[$i];
+                    }
+            }
+
+            foreach($data['email'] as $app){
+                if (!$menager->getRepository(Apprenant::class)->findOneBy(['email' => $app])) {
+                    $nouvApp = new Apprenant($app);
+                    $nouvApp->setProfil($menager->getRepository(Profil::class)->findOneBy(['libelle' => 'APPRENANT']));
+                    $promoObject->addApprenant($nouvApp);
+                }
+                $to[] = $app;
+            }
+        }
+        if (count($to)) {
+            $mail= (new \Swift_Message("Sélection Sonatel Academy"));
+            $mail->setFrom($myMail)
+                ->setTo($to)
+                ->setSubject("SONATEL ACADEMY RESULTATS SELECTION")
+                ->setBody("Bonjour Cher(e) apprenant,\nFélicitations!!! vous avez été sélectionné(e) suite à votre test dentré à la Sonatel Academy.\nVeuillez utiliser ces informations pour vous connecter à votre promos.\nEmail: ".$app."\nPassword: bienvenu.\n A bientot!!!")
+                ;
+            $swift_Mailer->send($mail);
+        }
+        $validate->validate($promoObject);
+        $menager->persist($promoObject);
+        $menager->flush();
+        return $this->json($promoObject,Response::HTTP_OK);
+    }
 
     /**
      * @Route(
@@ -76,7 +163,7 @@ class PromoController extends AbstractController
                 }
             }
         }
-        dd($promo);
+        //dd($promo);
         $menager->flush();
         return $this->json($promo,Response::HTTP_OK);
     }

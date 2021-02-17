@@ -16,13 +16,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ORM\Entity(repositoryClass=CompetencesRepository::class)
  * @ApiResource(
+ *      normalizationContext={"groups"={"niveaux:read"}},
  *      collectionOperations={
- *
  *          "get_niveaux"={
  *              "method"="GET",
  *              "path"="/admin/competences",
- *              "normalization_context"={"groups"={"niveaux:read"}},
-     *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          },
  *          "post"={
@@ -37,7 +36,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     itemOperations={
  *          "get"={
  *              "path"="/admin/competences/{id}",
- *              "normalization_context"={"groups"={"niveaux:read"}},
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
@@ -47,8 +45,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "path"="/admin/competences/{id}",
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
- *              "denormalization_context"={"groups"={"cmpt:whrite"}},
- *              "normalization_context"={"groups"={"niveaux:read"}},
+ *              "route_name" = "putCopmt"
+ *      
  *          }
  *     },
  * )

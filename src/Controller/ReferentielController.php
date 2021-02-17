@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\GrpeCompetences;
 use App\Entity\Referentiel;
+use App\Service\ValidatorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,19 +42,23 @@ class ReferentielController extends AbstractController
      * @param EntityManagerInterface $menager
      * @return JsonResponse
      */
-    public function addRef(EntityManagerInterface $menager, Request $request, SerializerInterface $serializer)
+    public function addRef(EntityManagerInterface $menager, Request $request, SerializerInterface $serializer, ValidatorService $validate)
     {
        
         $ref = $request->request->all();
+        //dd($ref);
         $pr = $request->files->get("programme");
         $pr = fopen($pr->getRealPath(), "rb");
         $nouvRef = $serializer->denormalize($ref, Referentiel::class);
+        //dd($nouvRef);
         $grpeCompetences = explode(',', $ref['grpCmpt']);
-        //$grpeCompetences = explode(',', $ref['grpCmpt']);
-        foreach($ref['grpCmpt'] as $grpComp){
-            $nouvRef->addGrpeCompetence($menager->getRepository(GrpeCompetences::class)->findOneBy(['libelle' => $grpComp['libelle']]));
+        foreach($grpeCompetences as $grpComp){
+            if ($grpComp !== '') {
+                $nouvRef->addGrpeCompetence($menager->getRepository(GrpeCompetences::class)->findOneBy(['libelle' => $grpComp]));
+            }
         }
         $nouvRef->setProgramme($pr);
+        $validate->validate($nouvRef);
         $menager->persist($nouvRef);
         $menager->flush();
         return $this->json("success",Response::HTTP_OK);
@@ -70,7 +75,7 @@ class ReferentielController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function putUser($id, Request $request, EntityManagerInterface $menager)
+    public function putRef($id, Request $request, EntityManagerInterface $menager)
     {
         $donnee = $request->getContent();
         $ref = [];
@@ -96,9 +101,11 @@ class ReferentielController extends AbstractController
                     foreach($refUpdate->getGrpeCompetences() as $grp){
                         $refUpdate->removeGrpeCompetence($grp);
                     }
-                    //$grpeCompetences = explode(',', $ref['grpCmpt']);
-                    foreach($ref['grpCmpt'] as $grpComp){
-                        $refUpdate->addGrpeCompetence($menager->getRepository(GrpeCompetences::class)->findOneBy(['libelle' => $grpComp['libelle']]));
+                    $grpeCompetences = explode(',', $ref['grpCmpt']);
+                    foreach($grpeCompetences as $grpComp){
+                        if ($grpComp !== '') {
+                            $refUpdate->addGrpeCompetence($menager->getRepository(GrpeCompetences::class)->findOneBy(['libelle' => $grpComp]));
+                        }
                     }
                 }else{
                     $refUpdate->$setter($valeur);

@@ -15,17 +15,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *      collectionOperations={
  *          "get"={
- *              "access_control"="(is_granted(is_granted('ROLE_Administrateur') or 'ROLE_CM'))",
- *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_CM') or is_granted('ROLE_FORMATEUR') )",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "normalization_context"={"groups"={"apprenant:read"}}
  *          }     
  *      },
  *     itemOperations={
  *          "get"={
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          },
  *          "put"={
- *              "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_FORMATEUR'))",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource"
  *          }
  *     }

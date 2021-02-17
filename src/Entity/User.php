@@ -19,10 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorMap({"formateur"="Formateur", "apprenant"="Apprenant", "admin"="Admin", "cm"="Cm", "user"="User"})
  * @ApiResource(
  *      normalizationContext={"groups"={"user:read"}},
- *      attributes={
- *          "security"="is_granted('ROLE_ADMIN')",
- *          "security_message"="Vous n'avez pas acces à ce ressource",
- *      },
  *      routePrefix="/admin",
  *      collectionOperations={
  *          "get",
@@ -32,10 +28,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name"="add_user",
  *          },
+ *          "get_app_for"={
+ *              "method"="GET",
+ *              "path"="/app_and_for"
+ *          }
  *          
  *      },
  *      itemOperations={
- *          "get",
+ *          "get" = {
+ *              "method"="GET",
+ *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_CM') or is_granted('ROLE_FORMATEUR'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *          },
  *          "put_user"={
  *              "method"="PUT",
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
@@ -45,6 +49,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *          "delete"={
  *              "route_name"="delUser",
+ *              "access_control"="(is_granted('ROLE_ADMIN'))",
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *      }
  * 
@@ -117,16 +123,6 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $archiver=false;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Chat::class, mappedBy="user")
-     */
-    private $chats;
-
-    public function __construct()
-    {
-        $this->chats = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -264,36 +260,6 @@ class User implements UserInterface
     public function setArchiver(bool $archiver): self
     {
         $this->archiver = $archiver;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Chat[]
-     */
-    public function getChats(): Collection
-    {
-        return $this->chats;
-    }
-
-    public function addChat(Chat $chat): self
-    {
-        if (!$this->chats->contains($chat)) {
-            $this->chats[] = $chat;
-            $chat->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChat(Chat $chat): self
-    {
-        if ($this->chats->removeElement($chat)) {
-            // set the owning side to null (unless already changed)
-            if ($chat->getUser() === $this) {
-                $chat->setUser(null);
-            }
-        }
 
         return $this;
     }

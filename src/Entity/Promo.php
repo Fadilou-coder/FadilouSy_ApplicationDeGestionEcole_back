@@ -24,7 +24,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      routePrefix="/admin",
  *      collectionOperations={
  *          "get",
- *          "post",
+ *          "post" = {
+ *              "method"="post",
+ *              "path"="/promos",
+ *              "route_name"="add_promo"
+ *          },
  *          "get_grpPrincipale"={
  *              "method"="get",
  *              "path"="/promos/principal",
@@ -87,6 +91,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "normalization_context"={"groups"={"brief:read"}}
  *          }
  *     },
+ * )
+ * @UniqueEntity(
+ *      "titre",
+ *      message="Cette Promo existe deja"
  * )
  *
  */
@@ -167,13 +175,6 @@ class Promo
     private $groupe;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promos")
-     * @Groups({"promo:read", "groupe:read", "refs:read", "promo:whrite"})
-     * @ApiSubresource
-     */
-    private $referentiel;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $archiver=false;
@@ -199,7 +200,7 @@ class Promo
     private $competencesValides;
 
     /**
-     * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="promo")
+     * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="promo", cascade="persist")
      * @Groups ({"principale:read"})
      */
     private $apprenants;
@@ -215,6 +216,16 @@ class Promo
      */
     private $profilsDeSorties;
 
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     */
+    private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Referentiel::class, inversedBy="promos")
+     */
+    private $referentiels;
+
     public function __construct()
     {
         $this->groupe = new ArrayCollection();
@@ -224,6 +235,7 @@ class Promo
         $this->apprenants = new ArrayCollection();
         $this->chats = new ArrayCollection();
         $this->profilsDeSorties = new ArrayCollection();
+        $this->referentiels = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -377,18 +389,6 @@ class Promo
                 $groupe->setPromo(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getReferentiel(): ?Referentiel
-    {
-        return $this->referentiel;
-    }
-
-    public function setReferentiel(?Referentiel $referentiel): self
-    {
-        $this->referentiel = $referentiel;
 
         return $this;
     }
@@ -572,6 +572,42 @@ class Promo
         if ($this->profilsDeSorties->removeElement($profilsDeSorty)) {
             $profilsDeSorty->removePromo($this);
         }
+
+        return $this;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Referentiel[]
+     */
+    public function getReferentiels(): Collection
+    {
+        return $this->referentiels;
+    }
+
+    public function addReferentiel(Referentiel $referentiel): self
+    {
+        if (!$this->referentiels->contains($referentiel)) {
+            $this->referentiels[] = $referentiel;
+        }
+
+        return $this;
+    }
+
+    public function removeReferentiel(Referentiel $referentiel): self
+    {
+        $this->referentiels->removeElement($referentiel);
 
         return $this;
     }

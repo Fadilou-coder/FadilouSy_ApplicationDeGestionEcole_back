@@ -11,6 +11,7 @@ use App\Entity\Formateur;
 use App\Entity\LivrablePartiel;
 use App\Entity\Profil;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\UserService;
 use App\Service\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -109,8 +110,6 @@ class UserController extends AbstractController
                 }else{
                     $userUpdate->$setter($valeur);
                 }
-
-                
             }
         }
         $this->manager->flush();
@@ -222,4 +221,6 @@ class UserController extends AbstractController
         $menager->flush();
         return $this->json($profil,Response::HTTP_OK);
     }
+
+    
 }

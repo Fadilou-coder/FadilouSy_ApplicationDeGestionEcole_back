@@ -73,7 +73,7 @@ class GrpeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "refs:whrite", "compt:read", "cmpt:whrite"})
+     * @Groups({"cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "refs:whrite", "compt:read", "cmpt:whrite", "niveaux:read"})
      * 
      */
     private $id;
@@ -81,13 +81,13 @@ class GrpeCompetences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le libelle est obligatoire")
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "grpcmpt:whrite", "compt:read"})
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "ref:read", "grpecompt:read", "grpecomptences:read", "grpcmpt:whrite", "compt:read", "niveaux:read"})
      */
     private $libelle;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "grpcmpt:whrite", "compt:read"})
+     * @ORM\Column(type="string", length=510)
+     * @Groups({"refs:whrite", "cmpt:read", "grpe:read", "grpcmpt:whrite", "compt:read", "niveaux:read"})
      */
     private $descriptif;
 

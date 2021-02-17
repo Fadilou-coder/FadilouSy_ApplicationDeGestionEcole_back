@@ -23,7 +23,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      collectionOperations={
  *          "get"={
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
- *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "normalization_context"={"groups"={"apprenant:read"}}
  *          }, 
  *          "post_apprenant"={
  *              "method"="post",
@@ -36,7 +37,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={
  *          "get"={
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
- *              "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *              "access_control_message"="Vous n'avez pas access à cette Ressource",
+ *              "normalization_context"={"groups"={"apprenant:read"}}
  *          },
  *          "put"={
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR'))",
@@ -98,13 +100,14 @@ class Apprenant extends User
     private $profilsDeSortie;
 
 
-    public function __construct()
+    public function __construct($email)
     {
         $this->groupes = new ArrayCollection();
-        $this->setNom("nom")
+        $this->setNom("")
             ->setPrenom("")
             ->setImage("")
-            ->setPassword("");
+            ->setPassword("bienvenue")
+            ->setEmail($email);
         $this->apprenantLivrablePartiels = new ArrayCollection();
         $this->briefApprenant = new ArrayCollection();
         $this->competencesValides = new ArrayCollection();

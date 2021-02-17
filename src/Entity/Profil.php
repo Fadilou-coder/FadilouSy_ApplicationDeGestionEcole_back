@@ -18,17 +18,21 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  * @ApiResource(
  *      normalizationContext={"groups"={"profil:read"}},
- *      attributes={
+ *      attributes = {
  *          "security"="is_granted('ROLE_ADMIN')",
- *          "security_message"="Vous n'avez pas acces à ce ressource"
+ *          "security_message"="Vous n'avez pas access à cette Ressource",
  *      },
  *      routePrefix="/admin",
  *     itemOperations={
- *          "get",
+ *          "get" = {
+ *              "method"="GET",
+ *          },
  *          "put"={
+ *              "method"="PUT",
  *              "route_name"="putProfil",
  *          },
  *          "delete"={
+ *              "method"="DELETE",
  *              "route_name"="delProfil",
  *          },
  *     }

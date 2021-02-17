@@ -33,14 +33,14 @@ class Niveaux
     private $libelle;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=510)
      * @Groups({"niveaux:read", "cmpt:whrite"})
      * @Assert\NotBlank(message="critere d'evaluation Niveaux est obligatoire")
      */
     private $critereEvaluation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=510)
      * @Groups({"niveaux:read", "cmpt:whrite"})
      * @Assert\NotBlank(message="groupe d'action Niveaux est obligatoire")
      */

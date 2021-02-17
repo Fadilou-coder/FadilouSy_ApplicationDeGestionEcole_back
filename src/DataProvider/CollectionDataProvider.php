@@ -15,7 +15,7 @@ use App\Entity\Brief;
 use App\Entity\BriefApprenant;
 use App\Entity\BriefMaPromo;
 use App\Entity\CompetencesValides;
-use App\Entity\Promo;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -172,6 +172,30 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
             }
 
             return $br->getQuery()->getResult();
+        }
+        if ($operationName === "get_app_for"){
+            $c = explode('/', $context["request_uri"]);
+            //dd($c);
+            $users = $this->managerRegistry->getRepository(User::class)
+                ->createQueryBuilder('u')
+                ->innerJoin('u.profil', 'p')
+                ->andWhere('p.libelle = :val')
+                ->orWhere('p.libelle = :value')
+                ->setParameter('val', 'APPRENANT' )
+                ->setParameter('value', 'FORMATEUR')
+                ->andWhere('u.archiver= :status')
+                ->setParameter('status', false)
+
+            ;
+            $this->paginator->applyToCollection($users, new QueryNameGenerator(), $resourceClass, $operationName, $this->context);
+
+            if ($this->paginator instanceof QueryResultCollectionExtensionInterface
+                && $this->paginator->supportsResult($resourceClass, $operationName, $this->context)) {
+
+                return $this->paginator->getResult($users, $resourceClass, $operationName, $this->context);
+            }
+
+            return $users->getQuery()->getResult();
         }
         
         $repository = $this->managerRegistry->getRepository($resourceClass)

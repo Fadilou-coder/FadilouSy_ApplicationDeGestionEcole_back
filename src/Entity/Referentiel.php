@@ -18,6 +18,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *      routePrefix="/admin",
  *      collectionOperations={
  *          "get"={
+ *              "path"="/referentiels",
  *              "normalization_context"={"groups"={"ref:read"}},
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
@@ -30,6 +31,8 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "post"={
+ *              "method"="POST",
+ *              "path"="/referentiels",
  *              "access_control"="(is_granted('ROLE_ADMIN'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name" = "addRef",
@@ -38,27 +41,23 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *      },
  *      itemOperations={
  *          "get"={
+ *              "method"="get",
+ *              "path"="/referentiels/{id}",
  *              "normalization_context"={"groups"={"ref:read"}},
  *              "access_control"="(is_granted('ROLE_ADMIN') or is_granted('ROLE_FORMATEUR') or is_granted('ROLE_CM') or is_granted('ROLE_APPRENANT'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *          },
  *          "put"={
  *              "method"="put",
- *              "path"="api/admin/referentiels/{id}",
+ *              "path"="/referentiels/{id}",
  *              "access_control"="(is_granted('ROLE_Administrateur'), or is_granted('ROLE_Formateur') or is_granted('ROLE_CM') or is_granted('ROLE_Apprenant'))",
  *              "access_control_message"="Vous n'avez pas access à cette Ressource",
  *              "route_name"="put_ref"
  *          },
  *          "delete"={
  *              "method"="delete",
- *              "path"="api/admin/referentiels/{id}",
+ *              "path"="/referentiels/{id}",
  *              "route_name"="delRef",
- *          }
- *     },
- *     subresourceOperations={
- *          "api_promos_referentiel_competences_valides_get_subresource"={
- *              "method"="GET",
- *              "path"="/admnin/promos/{id}/referentiel/competences"
  *          }
  *     }
  * )
@@ -85,7 +84,7 @@ class Referentiel
     private $libelle;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=510)
      * @Assert\NotBlank(message="La presentation est obligatoire")
      * @Groups({"ref:read", "refs:whrite", "promo:whrite"})
      */
@@ -106,11 +105,6 @@ class Referentiel
     private $grpeCompetences;
 
     /**
-     * @ORM\OneToMany(targetEntity=Promo::class, mappedBy="referentiel")
-     */
-    private $promos;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $archiver=false;
@@ -122,16 +116,21 @@ class Referentiel
     private $competencesValides;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=510)
      * @Groups({"ref:read"})
      */
     private $critereEvaluation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=510)
      * @Groups({"ref:read"})
      */
     private $critereAdmission;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Promo::class, mappedBy="referentiels")
+     */
+    private $promos;
 
     public function __construct()
     {
@@ -210,36 +209,6 @@ class Referentiel
         return $this;
     }
 
-    /**
-     * @return Collection|Promo[]
-     */
-    public function getPromos(): Collection
-    {
-        return $this->promos;
-    }
-
-    public function addPromo(Promo $promo): self
-    {
-        if (!$this->promos->contains($promo)) {
-            $this->promos[] = $promo;
-            $promo->setReferentiel($this);
-        }
-
-        return $this;
-    }
-
-    public function removePromo(Promo $promo): self
-    {
-        if ($this->promos->removeElement($promo)) {
-            // set the owning side to null (unless already changed)
-            if ($promo->getReferentiel() === $this) {
-                $promo->setReferentiel(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getArchiver(): ?bool
     {
         return $this->archiver;
@@ -302,6 +271,33 @@ class Referentiel
     public function setCritereAdmission(string $critereAdmission): self
     {
         $this->critereAdmission = $critereAdmission;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Promo[]
+     */
+    public function getPromos(): Collection
+    {
+        return $this->promos;
+    }
+
+    public function addPromo(Promo $promo): self
+    {
+        if (!$this->promos->contains($promo)) {
+            $this->promos[] = $promo;
+            $promo->addReferentiel($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromo(Promo $promo): self
+    {
+        if ($this->promos->removeElement($promo)) {
+            $promo->removeReferentiel($this);
+        }
 
         return $this;
     }
