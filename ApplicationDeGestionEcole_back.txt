@@ -18,7 +18,7 @@ A la place de email, vous mettez votre email et à la place de m_d_p vous mettez
 - Composer install Pour télécharger les dépendances (installer au préalable Composer)
 - symfony serve (pour tester, Installer au préalable le CLI Symfony)
 
-4.Importer la base de donnée ou créer la base de donnée avec la commande: symfony console d:d:c
+4.Importer la base de donnée(nommer votre base de donnée symfony) ou créer la base de donnée avec la commande: symfony console d:d:c
 
 4. Aller sur le navigateur et Voir toutes les routes (naviguer sur http://localhost:8000/api)
 
